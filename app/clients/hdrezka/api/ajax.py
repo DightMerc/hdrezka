@@ -26,9 +26,11 @@ class AJAX:
         return answer
 
     @classmethod
-    async def _send_data_modified(cls, action: str, data: dict[str, SupportsInt | str]) -> Response:
-        answer = (
-            await get_response("POST", f"https://rezka.ag/ajax/{action}/", data=data)
+    async def _send_data_modified(
+        cls, action: str, data: dict[str, SupportsInt | str]
+    ) -> Response:
+        answer = await get_response(
+            "POST", f"https://rezka.ag/ajax/{action}/", data=data
         )
         if not answer.json().get("success", True):
             raise AJAXFail(answer.get("message", answer))

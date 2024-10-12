@@ -13,6 +13,8 @@ class BaseController(object):
         self.request = request
         # self.session = create_session_maker()
         self.schema = schema
+        self.user_id = None
+        self.user_password = None
 
     def _call(self):
         raise NotImplementedError
@@ -24,6 +26,22 @@ class BaseController(object):
                 detail="Schema is not specified",
             )
         self.request_data = self.schema(**(await self.request.json()))
+
+    async def _verify_user(self):
+        auth_data: str = self.request.headers.get("Authorization")
+        if not auth_data:
+            raise HTTPException(status_code=404, detail="Authorization header required")
+        if "Bearer" not in auth_data:
+            raise HTTPException(status_code=404, detail="Authorization type incorrect")
+        auth_data = auth_data.replace("Bearer", "")
+        if len(auth_data.split("|")) != 2:
+            raise HTTPException(
+                status_code=404, detail="Authorization header incorrect"
+            )
+        user_id = auth_data.split("|")[0]
+        user_password = auth_data.split("|")[1]
+        self.user_id = user_id
+        self.user_password = user_password
 
     def _get_logger(self) -> logging.Logger:
         logger: logging.Logger = logging.getLogger("app")

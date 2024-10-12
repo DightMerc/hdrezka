@@ -12,13 +12,14 @@ class MyListController(BaseController):
         super(MyListController, self).__init__(request=request)
 
     async def _call(self):
+        await self._verify_user()
         try:
             continue_result = await ContinuePage(
                 url="https://hdrezka.ag/continue/"
             ).get_page(
                 cookies=dict(
-                    dle_user_id="1655756",
-                    dle_password="5701b8fd135843a24917b30c2ff15b7a",
+                    dle_user_id=self.user_id,
+                    dle_password=self.user_password,
                 )
             )
         except EmptyPage:

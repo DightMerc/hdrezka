@@ -10,7 +10,7 @@ from ..api.http import get_response
 from ..errors import EmptyPage
 from ..stream.player import *
 
-__all__ = ("Page", "PageNumber", "InlineItem")
+__all__ = ("ContinuePage", "PageNumber", "ContinueListItem")
 
 T = TypeVar("T")
 PageNumber = TypeVar("PageNumber", int, slice, Iterable[int])
