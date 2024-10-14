@@ -29,7 +29,7 @@ async def auth(request: Request, schema: AuthRequestSchema) -> ORJSONResponse:
 @router.get("/all", response_model=SearchResponseSchema)
 async def all(
     request: Request,
-    page: Annotated[Union[str, None], Query(description="Page number")] = None,
+    page: Annotated[Union[int, None], Query(description="Page number")] = None,
 ) -> ORJSONResponse:
     return await AllContentController(request=request).call()
 

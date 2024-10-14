@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class RecordInfoRequestSchema(BaseModel):
@@ -7,6 +9,6 @@ class RecordInfoRequestSchema(BaseModel):
 
 class ContentRequestSchema(BaseModel):
     url: str
-    season: int
-    episode: int
+    season: Optional[int] = Field(None)
+    episode: Optional[int] = Field(None)
     translator_id: int

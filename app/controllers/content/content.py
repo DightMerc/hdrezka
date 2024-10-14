@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from starlette.requests import Request
 
 from app.api.schemas.requests.records import ContentRequestSchema
@@ -18,14 +19,21 @@ class ContentController(BaseController):
         player: PlayerSeries | PlayerMovie = await Player(
             url_or_path=self.request_data.url
         )
-
-        stream = await player.get_stream(
-            season=self.request_data.season,
-            episode=self.request_data.episode,
-            translator_id=self.request_data.translator_id,
-        )
+        if isinstance(Player, PlayerSeries):
+            if not self.request_data.episode:
+                raise HTTPException(400, 'Episode required')
+            if not self.request_data.season:
+                raise HTTPException(400, 'Season required')
+            player: PlayerSeries
+            stream = await player.get_stream(
+                season=self.request_data.season,
+                episode=self.request_data.episode,
+                translator_id=self.request_data.translator_id,
+            )
+        else:
+            player: PlayerMovie
+            stream = await player.get_stream(
+                translator_id=self.request_data.translator_id
+            )
         video = stream.video
-        # print(await video.last_url)  # best quality (.m3u8)
-        # print((await video[video.min].last_url).mp4, end="\n\n")  # worst quality (.mp4)
-
         return video.raw_data
