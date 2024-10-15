@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from fastapi import HTTPException
 from starlette.requests import Request
 
@@ -19,6 +21,8 @@ class SearchController(BaseController):
             search_result = await Search(query=query).get_page(page=1)
         except EmptyPage:
             raise HTTPException(status_code=404, detail="Not found")
+        for inline_item in search_result:
+            inline_item.url = urlparse(url=inline_item.url).path
         return dict(
             items=[
                 SearchResultItem(**inline_item.__dict__).model_dump()
