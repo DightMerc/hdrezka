@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from fastapi import HTTPException
 from starlette.requests import Request
 
@@ -22,6 +24,8 @@ class MyListController(BaseController):
                     dle_password=self.user_password,
                 )
             )
+            for inline_item in continue_result:
+                inline_item.url = urlparse(url=inline_item.url).path
         except EmptyPage:
             raise HTTPException(status_code=404, detail="Not found")
         return dict(

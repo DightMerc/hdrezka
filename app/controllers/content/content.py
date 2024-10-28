@@ -19,7 +19,7 @@ class ContentController(BaseController):
         player: PlayerSeries | PlayerMovie = await Player(
             url_or_path=self.request_data.url
         )
-        if isinstance(Player, PlayerSeries):
+        if isinstance(player, PlayerSeries):
             if not self.request_data.episode:
                 raise HTTPException(400, 'Episode required')
             if not self.request_data.season:
